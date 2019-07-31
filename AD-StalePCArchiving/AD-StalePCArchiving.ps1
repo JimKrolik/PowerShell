@@ -34,7 +34,5 @@ foreach ($computer in $ADComputers)
         $compclean=($computer -replace '"', '') #Strip out the quotes
         Disable-ADAccount $compclean            #Disable the computer Account
         Move-ADObject $compclean -Targetpath 'OU=Archived Computers,DC=MyDomain,DC=local'   #Move the computer to the OU
-        
-        
-      
+
     }
