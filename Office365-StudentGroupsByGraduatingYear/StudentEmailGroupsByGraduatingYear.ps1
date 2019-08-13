@@ -2,7 +2,7 @@
 
 Author: James Krolik
 
-Purpose: The purpose of this script is to add distribution lists by graduating year.
+Purpose: The purpose of this script is to add students to distribution lists by graduating year.
 
 For example: EastStudents-OYG-2023@MyDomain.org
 
