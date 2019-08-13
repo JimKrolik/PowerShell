@@ -20,7 +20,7 @@ Dependencies:
 Import-Module ActiveDirectory
 
 $file = "C:\Scripts\student_data.csv" #File for reading student data from.
-$log = "C:\Incoming\Scripts\Student Groups by Graduating Year\log.txt" #log file
+$log = "C:\Scripts\Student Groups by Graduating Year\log.txt" #log file
 
 $date = get-date -format g #Get the current Date/Time
 
