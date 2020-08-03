@@ -9,7 +9,7 @@ Active Directory - Moving computers around based on naming prefixes.
 
 Active Directory - Archiving and disabling devices that have not been on the network.
 
-Active Directory / Office 365 - Creating distribution lists and sorting students for e-mail groups.
+Active Directory - Creating distribution lists and sorting students for e-mail groups.
 
 Office 365 - Setting the 'Send As' (Trustee) setting for all users.
 
