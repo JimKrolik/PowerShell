@@ -15,27 +15,84 @@ Dependencies:
         StudentAccount - Their Active Directory account name.
         Enroll_Status - Whether or not the student is actively enrolled.  We use "0" in PowerSchool to signify an actively enrolled student.
 
+
+Revised 08/03/2020 - Added logic to check for and create the distribution list if it isn't present.
+
 #>
 
 Import-Module ActiveDirectory
 
-$file = "C:\Scripts\student_data.csv" #File for reading student data from.
-$log = "C:\Scripts\log.txt" #log file
+<#
+$PSScriptRoot refers to the directory the script was run from.  
+You can also use the full path to the file.  Example:  C:\SomeDirectory\Test.csv
+#>
+
+$File = $PSScriptRoot + "\ServerRebootSchedule.csv"  #Path to CSV. 
+$log = $PSScriptRoot + "log.txt" #log file
+
 
 $date = get-date -format g #Get the current Date/Time
+
 
 write-host $date | out-file $log
 
 $users = import-csv $file
 
 #The last two digits of the current school year.
-$year = 19 #2019-2020 school year
+$year = 21 #2020-2021 school year
 
 $senior5thYear = $year
 $senior = $year + 1
 $junior = $year + 2
 $sophomore = $year + 3
 $freshman = $year + 4
+
+<##################################
+
+  Check if groups exist and create
+
+##################################>
+
+#Create freshmen groups for testing if the groups for this year do not exist:
+#If this is the first time running it, you could easily sub out $freshman with the other years or copy and paste the additional checks.
+
+    $westgroup = "WestStudents-OYG-20" + $freshman
+    $eastGroup = "EastStudents-OYG-20" + $freshman
+    $northgroup = "NorthStudents-OYG-20" + $freshman
+
+    $WestFreshmenListExists = Get-ADGroup -Identity $westgroup
+    $EastFreshmenListExists = Get-ADGroup -Identity $eastgroup
+    $NorthFreshmenListExists = Get-ADGroup -Identity $northgroup
+
+
+if (-not $WestFreshmenListExists) { #If the group does not exist, create it.
+    #Create group and set e-mail
+
+    New-ADGroup -Name $westgroup -Path "OU=West Students,OU=West,DC=mydomain,DC=local" -GroupCategory Distribution -GroupScope Global
+    Set-ADGroup -Identity $westgroup -add @{mail="$westgroup@mydomain.org"}
+
+}
+
+if (-not $EastFreshmenListExists) { 
+
+    New-ADGroup -Name $eastgroup -Path "OU=East Students,OU=East,DC=mydomain,DC=local" -GroupCategory Distribution -GroupScope Global
+    Set-ADGroup -Identity $eastgroup -add @{mail="$eastgroup@mydomain.org"}
+
+}
+
+if (-not $NorthFreshmenListExists) { 
+
+    New-ADGroup -Name $northgroup -Path "OU=North Students,OU=North,DC=mydomain,DC=local" -GroupCategory Distribution -GroupScope Global
+    Set-ADGroup -Identity $northgroup -add @{mail="$northgroup@mydomain.org"}
+}
+
+<##########################
+
+ Assign students to groups
+
+##########################>
+
+
 
 ForEach ($user in $users) { #For each line in the CSV.
 
