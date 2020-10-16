@@ -23,23 +23,23 @@ I typically run this manually and if the session does not establish, I will rest
 #Connect to a port and shut / no shut it.
 
 #Establish the SSH session, prompting the user for credentials
-New-SSHSession -ComputerName 172.16.16.118 -credential (get-credential)
+New-SSHSession -ComputerName 172.16.16.118 -credential (Get-Credential)
 
 #Start a new session
-$session = New-SSHShellStream -index 0
+$stream = New-SSHShellStream -index 0
 
 #Start sending commands
-invoke-sshstreamshellcommand -shellstream $stream -command "config t"
+Invoke-SSHStreamShellCommand -shellstream $stream -command "config t"
 
-invoke-sshstreamshellcommand -shellstream $stream -command "int Gi1/0/46"
-invoke-sshstreamshellcommand -shellstream $stream -command "shut"
+Invoke-SSHStreamShellCommand -shellstream $stream -command "int Gi1/0/46"
+Invoke-SSHStreamShellCommand -shellstream $stream -command "shut"
 
-sleep -seconds 2
+Sleep -seconds 2
 
-invoke-sshstreamshellcommand -shellstream $stream -command "no shut"
+Invoke-SSHStreamShellCommand -shellstream $stream -command "no shut"
 
 #Clean up the session
-get-sshsession | remove-sshsession
+Get-SSHSession | Remove-SSHSession
 
 ##########
 #Example 2:
@@ -48,20 +48,20 @@ get-sshsession | remove-sshsession
 #Connect to a port and properly remove PoE power
 
 #Establish the SSH session, prompting the user for credentials
-New-SSHSession -ComputerName 172.16.16.118 -credential (get-credential)
+New-SSHSession -ComputerName 172.16.16.118 -credential (Get-Credential)
 
 #Start a new session
-$session = New-SSHShellStream -index 0
+$stream = New-SSHShellStream -index 0
 
 #Start sending commands
-invoke-sshstreamshellcommand -shellstream $stream -command "config t"
+Invoke-SSHStreamShellCommand -shellstream $stream -command "config t"
 
-invoke-sshstreamshellcommand -shellstream $stream -command "int Gi1/0/46"
-invoke-sshstreamshellcommand -shellstream $stream -command "power inline never"
+Invoke-SSHStreamShellCommand -shellstream $stream -command "int Gi1/0/46"
+Invoke-SSHStreamShellCommand -shellstream $stream -command "power inline never"
 
-sleep -seconds 15
+Sleep -seconds 15
 
-invoke-sshstreamshellcommand -shellstream $stream -command "power inline auto"
+Invoke-SSHStreamShellCommand -shellstream $stream -command "power inline auto"
 
 #Clean up the session
-get-sshsession | remove-sshsession
+Get-SSHSession | Remove-SSHSession
