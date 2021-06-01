@@ -82,8 +82,8 @@ Start-Sleep -Seconds 2
 Remove-Item "C:\Windows\SoftwareDistribution\*" -Recurse -Force
 
 if (Test-Path -path "C:\$WINDOWS.~BT") { Remove-Item "C:\$WINDOWS.~BT" -Recurse -Force }
-if (Test-Path -path "C:\WINDOWS.old") { Remove-Item "C:\$WINDOWS.~BT" -Recurse -Force }
-if (Test-Path -path "C:\Windows10Upgrade") { Remove-Item "C:\$WINDOWS.~BT" -Recurse -Force }
+if (Test-Path -path "C:\WINDOWS.old") { Remove-Item "C:\WINDOWS.old" -Recurse -Force }
+if (Test-Path -path "C:\Windows10Upgrade") { Remove-Item "C:\Windows10Upgrade" -Recurse -Force }
 
 Start-Sleep -Seconds 2
 Start-Service "wuauserv"
