@@ -82,6 +82,7 @@ Start-Sleep -Seconds 2
 Remove-Item "C:\Windows\SoftwareDistribution\*" -Recurse -Force
 Remove-Item "C:\$WINDOWS.~BT" -Recurse -Force
 Remove-Item "C:\WINDOWS.old" -Recurse -Force
+Remove-Item "C:\Windows10Upgrade" -Recurse -Force
 
 Start-Sleep -Seconds 2
 Start-Service "wuauserv"
