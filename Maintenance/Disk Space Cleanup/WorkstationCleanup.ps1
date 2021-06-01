@@ -35,7 +35,7 @@
 
 Param(
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$false)]
     [Bool]$deepClean=$false
 
     )
