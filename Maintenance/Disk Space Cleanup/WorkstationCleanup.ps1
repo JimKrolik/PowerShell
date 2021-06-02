@@ -38,7 +38,7 @@ Param(
     [Parameter(Mandatory=$false)]
     [Bool]$deepClean=$false
 
-    )
+)
 
 
 <##########################
@@ -81,9 +81,11 @@ Start-Sleep -Seconds 2
 #Clean
 Remove-Item "C:\Windows\SoftwareDistribution\*" -Recurse -Force
 
-if (Test-Path -path "C:\$WINDOWS.~BT") { Remove-Item "C:\$WINDOWS.~BT" -Recurse -Force }
 if (Test-Path -path "C:\WINDOWS.old") { Remove-Item "C:\WINDOWS.old" -Recurse -Force }
 if (Test-Path -path "C:\Windows10Upgrade") { Remove-Item "C:\Windows10Upgrade" -Recurse -Force }
+#I use single quotes and literalpath here so the $ isn't interpreted.
+if (Test-Path -LiteralPath "C:\$WINDOWS.~BT") { Remove-Item 'C:\$WINDOWS.~BT' -Recurse -Force }
+if (Test-Path -LiteralPath "C:\$Windows.~WS") { Remove-Item 'C:\$Windows.~WS' -Recurse -Force }
 
 Start-Sleep -Seconds 2
 Start-Service "wuauserv"
