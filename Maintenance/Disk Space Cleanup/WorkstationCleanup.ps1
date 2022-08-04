@@ -1,14 +1,13 @@
-﻿<#
  <#	
 	.NOTES
 	===========================================================================
-     Created by:    James Krolik
-	 Created on:   	06/01/2021
-	 Updated on:	06/01/2021
-	 Filename:     	WorkstationCleanup.ps1
+        Created by:    James Krolik
+	Created on:   	06/01/2021
+	Updated on:	08/04/2022
+	Filename:     	WorkstationCleanup.ps1
 	===========================================================================
 	.DESCRIPTION
-		This script is designed to be run against machines that are in a low disk space state and will perform the following:
+	This script is designed to be run against machines that are in a low disk space state and will perform the following:
 
         Delete user profiles older than 30 days
         Clean all remaining user profile temp files
@@ -26,8 +25,74 @@
     .DEPENDENCIES
         The delprof2.exe utility must be present in the same folder the script is run from.  
         https://helgeklein.com/free-tools/delprof2-user-profile-deletion-tool/
-        
+	
+    .CHANGE LOG
+        Added functions for: 
+	   Deleting old files in a directory
+           Finding zip files (or other extensions) in a folder, looking for a matching folder, and then purging the zip file.
 #>
+
+<#################
+# Function Block #
+#################>
+function deleteOldFiles() {
+<#
+This function accepts a date, an extension and a path to purge any files nested within older 
+than x days (defaulted to 30) and also accepts a recursive flag.
+#>
+    Param (         
+        [Parameter(Mandatory=$false)]
+        [String]$days = 30,
+        [Parameter(Mandatory=$true)]
+        [String]$filePath,
+        [Parameter(Mandatory=$true)]
+        [String]$extension,
+        [Parameter(Mandatory=$false)]
+        [Bool]$recursive = $false
+        )
+
+        $filesToRemove = Get-ChildItem -Path "$filePath" | where {$_.LastWriteTime -lt (Get-Date).AddDays(-30) } | where {$_.Extension -eq $extension } 
+
+        forEach($file in $filesToRemove) {
+            Remove-Item $file.fullname -Force
+        }
+}
+
+function checkForMatchingZip() {
+<#
+This function will look for all files with a .zip (by default) extension and check for a 
+matching folder name within the same folder.
+#>
+    Param (         
+        [Parameter(Mandatory=$true)]
+        [String]$filePath,
+        [Parameter(Mandatory=$false)]
+        [String]$extension=".zip",
+        [Parameter(Mandatory=$false)]
+        [Bool]$recursive = $false
+        )
+
+        $filesToRemove = Get-ChildItem -Path "$filePath" -Recurse $recursive | where {$_.Extension -eq $extension } 
+        $lengthOfExtension = $extension.Length
+
+        #For each file with the extension
+        forEach($file in $filesToRemove) {
+            #Mathemetically calculate the length of the folder minus the extension.
+            $lengthOfFile = $file.FullName.Length
+            $lengthOfFolder = $lengthOfFile - $lengthOfExtension
+
+            #Build our folder path
+            $folderToCheck = $file.fullName.Substring(0, $lengthOfFolder)
+
+            #If the folder exists, remove the zip.
+            if (Test-Path -Path $folderToCheck) {
+                Remove-Item -Path $file.fullname -Force -Verbose
+            }
+            else {
+                #Leaving this here in case we want to add functionality later.
+            }
+        }
+}
 
 <################
  Parameter Block
@@ -60,6 +125,20 @@ $users | ForEach-Object {
 
     $path = "C:\Users\$($_.Name)\AppData\Local\Temp"
     Remove-Item "$path\*" -Recurse -Force
+    
+    #Downloads folders
+    $downloadsPath = "C:\Users\$($_.Name)\Downloads"
+	
+<#################
+ Delete old files
+#################>
+
+#Delete files older than 30 days.
+deleteOldFiles -filePath "$downloadsPath" -days 30 -extension ".exe" -recursive $false
+deleteOldFiles -filePath "$downloadsPath" -days 30 -extension ".msi" -recursive $false
+
+#Delete zip files that have a matching folder
+checkForMatchingZip -filePath "$downloadsPath" -extension ".zip" -recursive $true
 
 }
 
