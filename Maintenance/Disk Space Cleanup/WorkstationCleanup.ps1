@@ -99,12 +99,9 @@ matching folder name within the same folder.
 ################>
 
 Param(
-
     [Parameter(Mandatory=$false)]
     [Bool]$deepClean=$false
-
 )
-
 
 <##########################
  Delete old user Profiles
