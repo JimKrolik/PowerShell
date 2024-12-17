@@ -17,6 +17,8 @@ $username = ""
 $password = ""
 
 #The session ID of the device to delete.
+#This will be the GUID string between the name of the group in the URL and the training /Start.
+#Example:  https://screenconnect.yourorg.net/Workstations/50a2680d-9242-49fc-b75f-fac55ba59da2/Start, the session ID would be 50a2680d-9242-49fc-b75f-fac55ba59da2.
 $sessionID = ""
 
 #Query the main website to establish a session token.
