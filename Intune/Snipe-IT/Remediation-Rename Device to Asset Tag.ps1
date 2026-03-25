@@ -6,7 +6,7 @@ This script is designed to run as a compliance policy inside of Intune and works
 It uses Snipe-IT as the asset source and anchors against the serial number.
 #>
 
-$baseURL = ''    #The base URL to your domain
+$baseURL = ''    #The base URL to your instance.
 $targetURL = $baseURL + "/api/v1"
 
 $apiToken = ''   #Insert your API token here.
